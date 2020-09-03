@@ -1,0 +1,32 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>com.realazy.JPath</PackageId>
+    <Title>JPath — Navigate System.Text.Json.JsonElement with key path</Title>
+    <Version>0.1</Version>
+    <description>
+      Navigate System.Text.Json.JsonElement with key path
+    </description>
+    <Authors>CHEN Xian-an</Authors>
+    <Copyright>2018 ~ 2020 © CHEN Xian-an</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/cxa/JPath</PackageProjectUrl>
+    <PackageTags>Json, path, navigation</PackageTags>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <CustomCommands>
+      <CustomCommands>
+        <Command>
+          <type>Custom</type>
+        </Command>
+      </CustomCommands>
+    </CustomCommands>
+    <OtherFlags> --simpleresolution --nocopyfsharpcore</OtherFlags>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="JPath.fs" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="System.Text.Json" Version="4.7.2" />
+  </ItemGroup>
+</Project>
