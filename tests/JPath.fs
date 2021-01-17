@@ -3,12 +3,8 @@ module Tests
 open System
 open System.Text.Json
 open Xunit
+open FsUnit.Xunit
 open JPath
-
-let requal (r1: Result<'a, _>) (r2: Result<'a, _>) =
-  match r1, r2 with
-  | Ok o1, Ok o2 -> Assert.True ((o1 = o2))
-  | _ -> printfn "Exn: %A" r1; Assert.False (true)
 
 [<Fact>]
 let ``Test bool for keypath`` () =
@@ -16,7 +12,13 @@ let ``Test bool for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %b}}""" t)
   jdoc.RootElement
   |> JPath.bool "a.b"
-  |> requal (Ok t)
+  |> should equal t
+
+[<Fact>]
+let ``Test bool for keypath with exn`` () =
+  let jdoc = JsonDocument.Parse """{ "a" : {"b": 1}}"""
+  (fun () -> jdoc.RootElement |> JPath.bool "a.b" |> ignore)
+  |> should throw typeof<InvalidOperationException>
 
 [<Fact>]
 let ``Test bool for keypath with root array`` () =
@@ -24,7 +26,7 @@ let ``Test bool for keypath with root array`` () =
   let jdoc = JsonDocument.Parse (sprintf """[%b]""" t)
   jdoc.RootElement
   |> JPath.bool "0"
-  |> requal (Ok t)
+  |> should equal t
 
 [<Fact>]
 let ``Test byte for keypath`` () =
@@ -32,7 +34,7 @@ let ``Test byte for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" c)
   jdoc.RootElement
   |> JPath.byte "a.b"
-  |> requal (Ok c)
+  |> should equal c
 
 [<Fact>]
 let ``Test sbyte for keypath`` () =
@@ -40,7 +42,7 @@ let ``Test sbyte for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": [%i]}}""" sb)
   jdoc.RootElement
   |> JPath.sbyte "a.b.0"
-  |> requal (Ok sb)
+  |> should equal sb
 
 [<Fact>]
 let ``Test int16 for keypath`` () =
@@ -48,7 +50,7 @@ let ``Test int16 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" i)
   jdoc.RootElement
   |> JPath.int16 "a.b"
-  |> requal (Ok i)
+  |> should equal i
 
 [<Fact>]
 let ``Test uint16 for keypath`` () =
@@ -56,7 +58,7 @@ let ``Test uint16 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" ui)
   jdoc.RootElement
   |> JPath.uint16 "a.b"
-  |> requal (Ok ui)
+  |> should equal ui
 
 [<Fact>]
 let ``Test int32 for keypath`` () =
@@ -64,7 +66,7 @@ let ``Test int32 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" i)
   jdoc.RootElement
   |> JPath.int32 "a.b"
-  |> requal (Ok i)
+  |> should equal i
 
 [<Fact>]
 let ``Test uint32 for keypath`` () =
@@ -72,7 +74,7 @@ let ``Test uint32 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" ui)
   jdoc.RootElement
   |> JPath.uint32 "a.b"
-  |> requal (Ok ui)
+  |> should equal ui
 
 [<Fact>]
 let ``Test int64 for keypath`` () =
@@ -80,7 +82,7 @@ let ``Test int64 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" i)
   jdoc.RootElement
   |> JPath.int64 "a.b"
-  |> requal (Ok i)
+  |> should equal i
 
 [<Fact>]
 let ``Test uint64 for keypath`` () =
@@ -88,7 +90,7 @@ let ``Test uint64 for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %i}}""" ui)
   jdoc.RootElement
   |> JPath.uint64 "a.b"
-  |> requal (Ok ui)
+  |> should equal ui
 
 [<Fact>]
 let ``Test double for keypath`` () =
@@ -96,7 +98,7 @@ let ``Test double for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %f}}""" d)
   jdoc.RootElement
   |> JPath.double "a.b"
-  |> requal (Ok d)
+  |> should equal d
 
 [<Fact>]
 let ``Test float for keypath`` () =
@@ -104,7 +106,7 @@ let ``Test float for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %f}}""" f)
   jdoc.RootElement
   |> JPath.float32 "a.b"
-  |> requal (Ok f)
+  |> should equal f
 
 [<Fact>]
 let ``Test decimal for keypath`` () =
@@ -112,7 +114,7 @@ let ``Test decimal for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": %M}}""" d)
   jdoc.RootElement
   |> JPath.decimal "a.b"
-  |> requal (Ok d)
+  |> should equal d
 
 [<Fact>]
 let ``Test string for keypath`` () =
@@ -120,7 +122,7 @@ let ``Test string for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{ "a": {"b": "%s"}}""" s)
   jdoc.RootElement
   |> JPath.string "a.b"
-  |> requal (Ok s)
+  |> should equal s
 
 [<Fact>]
 let ``Test date time for keypath`` () =
@@ -128,7 +130,7 @@ let ``Test date time for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{"key": %s}""" (JsonSerializer.Serialize dt))
   jdoc.RootElement
   |> JPath.dateTime "key"
-  |> requal (Ok dt)
+  |> should equal dt
 
 [<Fact>]
 let ``Test date time offset for keypath`` () =
@@ -136,7 +138,7 @@ let ``Test date time offset for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{"key": %s}""" (JsonSerializer.Serialize dto))
   jdoc.RootElement
   |> JPath.dateTimeOffset "key"
-  |> requal (Ok dto)
+  |> should equal dto
 
 [<Fact>]
 let ``Test guid for keypath`` () =
@@ -144,4 +146,4 @@ let ``Test guid for keypath`` () =
   let jdoc = JsonDocument.Parse (sprintf """{"key": %s}""" (JsonSerializer.Serialize guid))
   jdoc.RootElement
   |> JPath.guid "key"
-  |> requal (Ok guid)
+  |> should equal guid

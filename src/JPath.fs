@@ -2,33 +2,27 @@ namespace JPath
 
 module JPath =
   open System.Text.Json
-  
+
   let private valueFor' (key:string) (jsonEl:JsonElement) =
     match jsonEl.ValueKind with
-    | JsonValueKind.Object -> jsonEl.GetProperty (propertyName = key) |> Ok
-    | JsonValueKind.Array -> jsonEl.Item (int (key)) |> Ok
-    | t -> sprintf "Expect an Object or Array to access key %A, but actual a %A" key t |> Error
+    | JsonValueKind.Object -> jsonEl.GetProperty (propertyName = key)
+    | JsonValueKind.Array -> jsonEl.Item (int (key))
+    | t ->
+      let exn = System.InvalidOperationException ("This value's ValueKind is neither Object nor Array.")
+      raise exn
 
-  let rec private loop keys result =
-    match keys, result with
-    | [], _
-    | _, Error _ ->
-      result
-    | [k], Ok jval ->
-      valueFor' k jval
-    | k::rest, Ok jval ->
-      loop rest <| valueFor' k jval
+  let rec private loop keys jel =
+    match keys with
+    | [] -> jel
+    | k::rest ->
+      loop rest (valueFor' k jel)
 
   let property (keyPath:string) jsonEl =
     let keys = keyPath.Split '.' |> Array.toList
-    loop keys (Ok jsonEl)
+    loop keys jsonEl
 
   let private __ (converter: JsonElement -> 'a) (keyPath:string) (jsonEl:JsonElement)  =
-    property keyPath jsonEl
-    |> Result.bind (fun jel ->
-      try Ok (converter jel)
-      with exn -> Error (sprintf "Value for %A fail to convert: %A" keyPath exn.Message)
-    )
+    property keyPath jsonEl |> converter
 
   let bool = __ (fun jel -> jel.GetBoolean ())
 

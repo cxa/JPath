@@ -3,12 +3,12 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>com.realazy.JPath</PackageId>
     <Title>JPath — Navigate System.Text.Json.JsonElement with key path</Title>
-    <Version>0.1</Version>
+    <Version>0.2</Version>
     <description>
       Navigate System.Text.Json.JsonElement with key path
     </description>
     <Authors>CHEN Xian-an</Authors>
-    <Copyright>2018 ~ 2020 © CHEN Xian-an</Copyright>
+    <Copyright>2021 © CHEN Xian-an</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cxa/JPath</PackageProjectUrl>
     <PackageTags>Json, path, navigation</PackageTags>
@@ -21,7 +21,7 @@
         </Command>
       </CustomCommands>
     </CustomCommands>
-    <OtherFlags> --simpleresolution --nocopyfsharpcore</OtherFlags>
+    <OtherFlags>--simpleresolution --nocopyfsharpcore</OtherFlags>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="JPath.fs" />

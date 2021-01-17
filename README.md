@@ -1,6 +1,6 @@
 # JPath
 
-Navigate System.Text.Json.JsonElement with a key path.
+Navigate JsonElement with a key path.
 
 (For navigating `System.Json`, use [KeyPathJson](https://github.com/cxa/KeyPathJson))
 
@@ -18,7 +18,7 @@ Given a JSON like this:
     "id": "file",
     "value": "File",
     "popup": {
-      "menuitem": [
+      "menuitems": [
         { "value": "New", "onclick": "CreateNewDoc()" },
         { "value": "Open", "onclick": "OpenDoc()" },
         { "value": "Close", "onclick": "CloseDoc()" }
@@ -28,7 +28,7 @@ Given a JSON like this:
 }
 ```
 
-Say you need to access the second `menuitem`'s `value`, with `JPath` this is a piece of cake:
+Say if you need to access the second `menuitems`'s `value`, with `JPath` this is a piece of cake:
 
 ```fsharp
 open System.Text.Json
@@ -36,55 +36,43 @@ open JPath
 
 let jdoc = JsonDocument.Parse jsonStr
 
-// result is a Result<string, string>
+// result is `New`
 let result =
   jdoc.RootElement
-  |> JPath.string "menu.popup.menuitem.1.value"
-
+  |> JPath.string "menu.popup.menuitems.1.value"
 ```
 
-One thing to aware is that you must use a number as a key to access array, like `menuitem.1` in the above example.
+One thing to notice is that you must use a number as a key to access an array, like `menuitems.1` in the above example.
 
 Except accessing string, `KeyPathJson` also provides:
 
 ```fsharp
 namespace JPath
-  module JPath = begin
-    open System.Text.Json
+  open System.Text.Json
 
-    val property : keyPath:string -> jsonEl:JsonElement -> Result<JsonElement,string>
-    val bool : keyPath:string -> jsonEl:JsonElement -> Result<bool,string>
-    val byte : keyPath:string -> jsonEl:JsonElement -> Result<byte,string>
-    val bytesFromBase64 :
-      keyPath:string -> jsonEl:JsonElement -> Result<byte [],string>
-    val dateTime :
-      keyPath:string -> jsonEl:JsonElement -> Result<System.DateTime,string>
+  module JPath = begin
+    val property :
+      keyPath:string ->
+        jsonEl:JsonElement -> JsonElement
+    val bool : (string -> JsonElement -> bool)
+    val byte : (string -> JsonElement -> byte)
+    val bytesFromBase64 : (string -> JsonElement -> byte [])
+    val dateTime : (string -> JsonElement -> System.DateTime)
     val dateTimeOffset :
-      keyPath:string -> jsonEl:JsonElement ->
-         Result<System.DateTimeOffset,string>
-    val decimal :
-      keyPath:string -> jsonEl:JsonElement -> Result<decimal,string>
-    val double :
-      keyPath:string -> jsonEl:JsonElement -> Result<float,string>
-    val guid :
-      keyPath:string -> jsonEl:JsonElement -> Result<System.Guid,string>
-    val int16 : keyPath:string -> jsonEl:JsonElement -> Result<int16,string>
-    val int32 : keyPath:string -> jsonEl:JsonElement -> Result<int,string>
-    val int64 : keyPath:string -> jsonEl:JsonElement -> Result<int64,string>
-    val rawText :
-      keyPath:string -> jsonEl:JsonElement -> Result<string,string>
-    val sbyte : keyPath:string -> jsonEl:JsonElement -> Result<sbyte,string>
-    val single :
-      keyPath:string -> jsonEl:JsonElement -> Result<float32,string>
-    val float32 :
-      keyPath:string -> jsonEl:JsonElement -> Result<float32,string>
-    val string :
-      keyPath:string -> jsonEl:JsonElement -> Result<string,string>
-    val uint16 :
-      keyPath:string -> jsonEl:JsonElement -> Result<uint16,string>
-    val uint32 :
-      keyPath:string -> jsonEl:JsonElement -> Result<uint32,string>
-    val uint64 :
-      keyPath:string -> jsonEl:JsonElement -> Result<uint64,string>
+      (string -> JsonElement -> System.DateTimeOffset)
+    val decimal : (string -> JsonElement -> decimal)
+    val double : (string -> JsonElement -> float)
+    val guid : (string -> JsonElement -> System.Guid)
+    val int16 : (string -> JsonElement -> int16)
+    val int32 : (string -> JsonElement -> int)
+    val int64 : (string -> JsonElement -> int64)
+    val rawText : (string -> JsonElement -> string)
+    val sbyte : (string -> JsonElement -> sbyte)
+    val single : (string -> JsonElement -> float32)
+    val float32 : (string -> JsonElement -> float32)
+    val string : (string -> JsonElement -> string)
+    val uint16 : (string -> JsonElement -> uint16)
+    val uint32 : (string -> JsonElement -> uint32)
+    val uint64 : (string -> JsonElement -> uint64)
   end
 ```
